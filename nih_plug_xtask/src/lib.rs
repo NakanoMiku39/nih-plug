@@ -53,6 +53,7 @@ pub enum Architecture {
     X86,
     X86_64,
     RISCV64,
+    LOONG64,
     // There are also a ton of different 32-bit ARM architectures, we'll just pretend they don't
     // exist for now
     AArch64,
@@ -604,6 +605,8 @@ fn compilation_target(cross_compile_target: Option<&str>) -> Result<CompilationT
             let architecture = Architecture::AArch64;
             #[cfg(target_arch = "riscv64")]
             let architecture = Architecture::RISCV64;
+            #[cfg(target_arch = "loongarch64")]
+            let architecture = Architecture::LOONG64;
 
             #[cfg(target_os = "linux")]
             return Ok(CompilationTarget::Linux(architecture));
@@ -706,6 +709,9 @@ fn vst3_bundle_library_name(package: &str, target: CompilationTarget) -> String 
         CompilationTarget::Linux(Architecture::RISCV64) => {
             format!("{package}.vst3/Contents/riscv64-linux/{package}.so")
         }
+        CompilationTarget::Linux(Architecture::LOONG64) => {
+            format!("{package}.vst3/Contents/loong64-linux/{package}.so")
+        }
         CompilationTarget::Linux(Architecture::AArch64) => {
             format!("{package}.vst3/Contents/aarch64-linux/{package}.so")
         }
@@ -723,6 +729,9 @@ fn vst3_bundle_library_name(package: &str, target: CompilationTarget) -> String 
         }
         CompilationTarget::Windows(Architecture::RISCV64) => {
             panic!("riscv64 are not supported by windows currently!")
+        }
+        CompilationTarget::Windows(Architecture::LOONG64) => {
+            panic!("loong64 are not supported by windows currently!")
         }
     }
 }
